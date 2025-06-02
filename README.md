@@ -7,7 +7,7 @@
 <div align="center">
 
 ###  [Arxiv Preprint]() | [HF Model](https://huggingface.co/EraseFlow) <br>
-EraseFlow, our proposed non-adversarial concept‐erasure algorithm, improves diffusion model safety by using adversarial training to remove unwanted concepts while preserving high image‐generation quality.
+EraseFlow, our proposed non-adversarial concept‐erasure algorithm, improves diffusion model safety by using GFlowNets to remove unwanted concepts while preserving high image‐generation quality.
 
 </div>
 
