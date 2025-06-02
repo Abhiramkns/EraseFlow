@@ -1,6 +1,6 @@
 <div align="center">
       
-# <br> EraseFlow: Learning Concept Erasure Policies via GFlowNet-Driven Alignment </br>
+# EraseFlow: Learning Concept Erasure Policies via GFlowNet-Driven Alignment
 
 <div align="left">
 
@@ -11,8 +11,11 @@ EraseFlow, our proposed non-adversarial concept‐erasure algorithm, improves di
 
 </div>
 
-<div align='center'>
-      <img src = 'assets/fid_vs_udatk.png'>
+<div align="center">
+  <img
+    src="assets/teaser.png"
+    alt="FID vs. UnlearnDiffAtk"
+  >
 </div>
 
 ## Simple Usage of EraseFlow Models
