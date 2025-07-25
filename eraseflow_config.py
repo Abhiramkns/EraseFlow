@@ -264,7 +264,7 @@ def eraseflow_1gpu():
 
     # sd3.5 medium
     config.pretrained.model = "stabilityai/stable-diffusion-3-medium-diffusers"
-    config.sample.num_steps = 10
+    config.sample.num_steps = 40
     config.sample.eval_num_steps = 40
     config.sample.guidance_scale = 4.5
 
