@@ -26,7 +26,7 @@ def get_config():
     config.dataset = ""
     config.resolution = 768
     config.num_epochs = 20
-    config.beta = 1000
+    config.beta = 1000.0
     config.prompt = "Nudity"
     config.anchor_prompt = "Fully Dressed"
 

@@ -263,9 +263,9 @@ def eraseflow_1gpu():
     config.dataset = os.path.join(os.getcwd(), "dataset/ocr")
     config.prompt = "Nudity"
     config.anchor_prompt = "Fully Dressed"
-
+    config.mixed_precision = "bf16"
     # sd3.5 medium
-    config.pretrained.model = "stabilityai/stable-diffusion-3-medium-diffusers"
+    config.pretrained.model = "black-forest-labs/FLUX.1-dev" # "stabilityai/stable-diffusion-3-medium-diffusers"
     config.sample.num_steps = 10
     config.sample.eval_num_steps = 40
     config.sample.guidance_scale = 4.5
@@ -290,7 +290,53 @@ def eraseflow_1gpu():
     config.train.flow_learning_rate = 3e-4
     config.save_freq = 1 # epoch
     config.eval_freq = 60
-    config.save_dir = '/data/data/matt/gfn/eraseflows/sd3.5_logs3'
+    config.save_dir = '/data/data/matt/gfn/EraseFlow/flux_logs'
+    config.reward_fn = {
+        "ocr": 1.0,
+    }
+    
+    config.prompt_fn = "general_ocr"
+    config.num_epochs = 1000
+    config.beta = 25
+    config.switch_epoch = 10
+
+    config.per_prompt_stat_tracking = True
+    return config
+
+def eraseflow_4gpu():
+    gpu_number = 4
+    config = compressibility()
+    config.dataset = os.path.join(os.getcwd(), "dataset/ocr")
+    config.prompt = "Nudity"
+    config.anchor_prompt = "Fully Dressed"
+    config.mixed_precision = "bf16"
+    # sd3.5 medium
+    config.pretrained.model = "black-forest-labs/FLUX.1-dev" # "stabilityai/stable-diffusion-3-medium-diffusers"
+    config.sample.num_steps = 10
+    config.sample.eval_num_steps = 40
+    config.sample.guidance_scale = 4.5
+
+    config.resolution = 512
+    config.sample.train_batch_size = 1
+    config.sample.num_image_per_prompt = 1
+    config.sample.num_batches_per_epoch = 1 # int(8/(gpu_number*config.sample.train_batch_size/config.sample.num_image_per_prompt))
+    # assert config.sample.num_batches_per_epoch % 2 == 0, "Please set config.sample.num_batches_per_epoch to an even number! This ensures that config.train.gradient_accumulation_steps = config.sample.num_batches_per_epoch / 2, so that gradients are updated twice per epoch."
+    config.sample.test_batch_size = 0 # 16 is a special design, the test set has a total of 1018, to make 8*16*n as close as possible to 1018, because when the number of samples cannot be divided evenly by the number of cards, multi-card will fill the last batch to ensure each card has the same number of samples, affecting gradient synchronization.
+
+    config.train.batch_size = config.sample.train_batch_size
+    config.train.gradient_accumulation_steps = 1
+    config.train.num_inner_epochs = 1
+    config.train.timestep_fraction = 1.0
+    # kl loss
+    config.train.beta = 0.00
+    # Whether to use the std of all samples or the current group's.
+    config.sample.global_std = True
+    config.train.ema = True
+    config.train.learning_rate = 3e-4
+    config.train.flow_learning_rate = 3e-4
+    config.save_freq = 1 # epoch
+    config.eval_freq = 60
+    config.save_dir = '/data/data/matt/gfn/EraseFlow/flux_logs'
     config.reward_fn = {
         "ocr": 1.0,
     }
