@@ -30,6 +30,8 @@ import random
 from torch.utils.data import Dataset, DataLoader, Sampler
 from flow_grpo.ema import EMAModuleWrapper
 
+import copy
+
 tqdm = partial(tqdm.tqdm, dynamic_ncols=True)
 
 
@@ -202,7 +204,6 @@ def main(_):
 
     text_encoders = [pipeline.text_encoder, pipeline.text_encoder_2, pipeline.text_encoder_3]
     tokenizers = [pipeline.tokenizer, pipeline.tokenizer_2, pipeline.tokenizer_3]
-
     # disable safety checker
     pipeline.safety_checker = None
     # make the progress bar nicer
@@ -229,7 +230,7 @@ def main(_):
     pipeline.text_encoder_3.to(accelerator.device, dtype=inference_dtype)
     
     pipeline.transformer.to(accelerator.device)
-
+    
     if config.use_lora:
         # Set correct lora layers
         target_modules = [
@@ -350,116 +351,117 @@ def main(_):
 
     epoch = 0
     global_step = 0
-    
+    switch_epoch = config.switch_epoch
     for epoch in range(config.num_epochs):
         if epoch % config.save_freq == 0 and epoch > 0 and accelerator.is_main_process:
             save_ckpt(config.save_dir, transformer, global_step, accelerator, ema, transformer_trainable_parameters, config)
 
         #################### SAMPLING ####################
         pipeline.transformer.eval()
-        samples = []
-        prompts = []
-        for i in tqdm(
-            range(config.sample.num_batches_per_epoch),
-            desc=f"Epoch {epoch}: sampling",
-            disable=not accelerator.is_local_main_process,
-            position=0,
-        ):
-            prompts = config.anchor_prompt
-            prompt_embeds, pooled_prompt_embeds = compute_text_embeddings(
-                prompts, 
-                text_encoders, 
-                tokenizers, 
-                max_sequence_length=128, 
-                device=accelerator.device
-            )
-            prompt_ids = tokenizers[0](
-                prompts,
-                padding="max_length",
-                max_length=256,
-                truncation=True,
-                return_tensors="pt",
-            ).input_ids.to(accelerator.device)
-
-            # sample
-            with autocast():
-                with torch.no_grad():
-                    _, latents, log_probs = pipeline_with_logprob(
-                        pipeline,
-                        prompt_embeds=prompt_embeds,
-                        pooled_prompt_embeds=pooled_prompt_embeds,
-                        negative_prompt_embeds=sample_neg_prompt_embeds,
-                        negative_pooled_prompt_embeds=sample_neg_pooled_prompt_embeds,
-                        num_inference_steps=config.sample.num_steps,
-                        guidance_scale=config.sample.guidance_scale,
-                        output_type="pt",
-                        height=config.resolution,
-                        width=config.resolution, 
-                        noise_level=config.sample.noise_level,
+        if epoch == 0 or epoch < switch_epoch:
+            perm_samples = []
+            prompts = []
+            for i in tqdm(
+                range(config.sample.num_batches_per_epoch),
+                desc=f"Epoch {epoch}: sampling",
+                disable=not accelerator.is_local_main_process,
+                position=0,
+            ):
+                prompts = config.anchor_prompt
+                prompt_embeds, pooled_prompt_embeds = compute_text_embeddings(
+                    prompts, 
+                    text_encoders, 
+                    tokenizers, 
+                    max_sequence_length=128, 
+                    device=accelerator.device
                 )
-                    
-            prompts = [config.prompt]
-            prompt_embeds, pooled_prompt_embeds = compute_text_embeddings(
-                prompts, 
-                text_encoders, 
-                tokenizers, 
-                max_sequence_length=128, 
-                device=accelerator.device
-            )
-            prompt_ids = tokenizers[0](
-                prompts,
-                padding="max_length",
-                max_length=256,
-                truncation=True,
-                return_tensors="pt",
-            ).input_ids.to(accelerator.device)
+                prompt_ids = tokenizers[0](
+                    prompts,
+                    padding="max_length",
+                    max_length=256,
+                    truncation=True,
+                    return_tensors="pt",
+                ).input_ids.to(accelerator.device)
 
-            latents = torch.stack(
-                latents, dim=1
-            )  # (batch_size, num_steps + 1, 16, 96, 96)
-            log_probs = torch.stack(log_probs, dim=1)  # shape after stack (batch_size, num_steps)
+                # sample
+                with autocast():
+                    with torch.no_grad():
+                        _, latents, log_probs = pipeline_with_logprob(
+                            pipeline,
+                            prompt_embeds=prompt_embeds,
+                            pooled_prompt_embeds=pooled_prompt_embeds,
+                            negative_prompt_embeds=sample_neg_prompt_embeds,
+                            negative_pooled_prompt_embeds=sample_neg_pooled_prompt_embeds,
+                            num_inference_steps=config.sample.num_steps,
+                            guidance_scale=config.sample.guidance_scale,
+                            output_type="pt",
+                            height=config.resolution,
+                            width=config.resolution, 
+                            noise_level=config.sample.noise_level,
+                    )
+                        
+                prompts = [config.prompt]
+                prompt_embeds, pooled_prompt_embeds = compute_text_embeddings(
+                    prompts, 
+                    text_encoders, 
+                    tokenizers, 
+                    max_sequence_length=128, 
+                    device=accelerator.device
+                )
+                prompt_ids = tokenizers[0](
+                    prompts,
+                    padding="max_length",
+                    max_length=256,
+                    truncation=True,
+                    return_tensors="pt",
+                ).input_ids.to(accelerator.device)
 
-            timesteps = pipeline.scheduler.timesteps.repeat(
-                config.sample.train_batch_size, 1
-            )  # (batch_size, num_steps)
+                latents = torch.stack(
+                    latents, dim=1
+                )  # (batch_size, num_steps + 1, 16, 96, 96)
+                log_probs = torch.stack(log_probs, dim=1)  # shape after stack (batch_size, num_steps)
 
-            # yield to to make sure reward computation starts
-            time.sleep(0)
+                timesteps = pipeline.scheduler.timesteps.repeat(
+                    config.sample.train_batch_size, 1
+                )  # (batch_size, num_steps)
 
-            samples.append(
-                {
-                    "prompt_ids": prompt_ids,
-                    "prompt_embeds": prompt_embeds,
-                    "pooled_prompt_embeds": pooled_prompt_embeds,
-                    "timesteps": timesteps,
-                    "latents": latents[
-                        :, :-1
-                    ],  # each entry is the latent before timestep t
-                    "next_latents": latents[
-                        :, 1:
-                    ],  # each entry is the latent after timestep t
-                    "log_probs": log_probs,
-                }
-            )
+                # yield to to make sure reward computation starts
+                time.sleep(0)
 
-            # sampling target concept for logging
-            with autocast():
-                with torch.no_grad():
-                    images, _, _ = pipeline_with_logprob(
-                        pipeline,
-                        prompt_embeds=prompt_embeds,
-                        pooled_prompt_embeds=pooled_prompt_embeds,
-                        negative_prompt_embeds=sample_neg_prompt_embeds,
-                        negative_pooled_prompt_embeds=sample_neg_pooled_prompt_embeds,
-                        num_inference_steps=config.sample.num_steps,
-                        guidance_scale=config.sample.guidance_scale,
-                        output_type="pt",
-                        height=config.resolution,
-                        width=config.resolution, 
-                        noise_level=config.sample.noise_level,
+                perm_samples.append(
+                    {
+                        "prompt_ids": prompt_ids,
+                        "prompt_embeds": prompt_embeds,
+                        "pooled_prompt_embeds": pooled_prompt_embeds,
+                        "timesteps": timesteps,
+                        "latents": latents[
+                            :, :-1
+                        ],  # each entry is the latent before timestep t
+                        "next_latents": latents[
+                            :, 1:
+                        ],  # each entry is the latent after timestep t
+                        "log_probs": log_probs,
+                    }
                 )
 
-
+                # sampling target concept for logging
+                
+        with autocast():
+            with torch.no_grad():
+                images, _, _ = pipeline_with_logprob(
+                    pipeline,
+                    prompt_embeds=prompt_embeds,
+                    pooled_prompt_embeds=pooled_prompt_embeds,
+                    negative_prompt_embeds=sample_neg_prompt_embeds,
+                    negative_pooled_prompt_embeds=sample_neg_pooled_prompt_embeds,
+                    num_inference_steps=config.sample.num_steps,
+                    guidance_scale=config.sample.guidance_scale,
+                    output_type="pt",
+                    height=config.resolution,
+                    width=config.resolution, 
+                    noise_level=config.sample.noise_level,
+            )
+        samples = copy.deepcopy(perm_samples)
         # collate samples into dict where each entry has shape (num_batches_per_epoch * sample.batch_size, ...)
         samples = {
             k: torch.cat([s[k] for s in samples], dim=0)
@@ -542,8 +544,10 @@ def main(_):
                 
                 total_loss = 0.0
 
+                # indices = torch.cat([torch.arange(num_train_timesteps-10, num_train_timesteps)]).to(sample["latents"].device)
                 train_timesteps = [step_index  for step_index in range(num_train_timesteps)]
-            
+                # train_timesteps = [train_timesteps[xx] for xx in indices]
+                
                 all_log_probs = []
                 all_log_pb = []
                 for j in tqdm(
@@ -564,7 +568,7 @@ def main(_):
                         all_log_probs.append(log_prob)
                         all_log_pb.append(log_pb)
                         
-                        loss_flow = log_prob - log_pb # shape (batch_size,)
+                        loss_flow = log_prob # shape (batch_size,)
                         total_loss = total_loss + loss_flow
 
                 z_target = config.beta

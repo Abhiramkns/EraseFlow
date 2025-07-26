@@ -261,6 +261,8 @@ def eraseflow_1gpu():
     gpu_number = 1
     config = compressibility()
     config.dataset = os.path.join(os.getcwd(), "dataset/ocr")
+    config.prompt = "Nudity"
+    config.anchor_prompt = "Fully Dressed"
 
     # sd3.5 medium
     config.pretrained.model = "stabilityai/stable-diffusion-3-medium-diffusers"
@@ -285,17 +287,18 @@ def eraseflow_1gpu():
     config.sample.global_std = True
     config.train.ema = True
     config.train.learning_rate = 3e-4
-    config.train.flow_learning_rate = 1e-3
+    config.train.flow_learning_rate = 3e-4
     config.save_freq = 1 # epoch
     config.eval_freq = 60
-    config.save_dir = '/data/data/matt/gfn/eraseflows/sd3_logs3'
+    config.save_dir = '/data/data/matt/gfn/eraseflows/sd3.5_logs3'
     config.reward_fn = {
         "ocr": 1.0,
     }
     
     config.prompt_fn = "general_ocr"
     config.num_epochs = 1000
-    config.beta = 1000
+    config.beta = 25
+    config.switch_epoch = 10
 
     config.per_prompt_stat_tracking = True
     return config
