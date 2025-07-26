@@ -284,7 +284,7 @@ def main(_):
     
     param_groups = [
         {"params": transformer_trainable_parameters, "lr": config.train.learning_rate},
-        {"params": z_model, "lr": config.train.learning_rate},
+        {"params": z_model, "lr": config.train.flow_learning_rate},
     ]
     optimizer = optimizer_cls(
         param_groups,
@@ -384,7 +384,7 @@ def main(_):
             # sample
             with autocast():
                 with torch.no_grad():
-                    images, latents, log_probs = pipeline_with_logprob(
+                    _, latents, log_probs = pipeline_with_logprob(
                         pipeline,
                         prompt_embeds=prompt_embeds,
                         pooled_prompt_embeds=pooled_prompt_embeds,
@@ -398,7 +398,7 @@ def main(_):
                         noise_level=config.sample.noise_level,
                 )
                     
-            prompts = config.prompt
+            prompts = [config.prompt]
             prompt_embeds, pooled_prompt_embeds = compute_text_embeddings(
                 prompts, 
                 text_encoders, 
@@ -441,6 +441,24 @@ def main(_):
                     "log_probs": log_probs,
                 }
             )
+
+            # sampling target concept for logging
+            with autocast():
+                with torch.no_grad():
+                    images, _, _ = pipeline_with_logprob(
+                        pipeline,
+                        prompt_embeds=prompt_embeds,
+                        pooled_prompt_embeds=pooled_prompt_embeds,
+                        negative_prompt_embeds=sample_neg_prompt_embeds,
+                        negative_pooled_prompt_embeds=sample_neg_pooled_prompt_embeds,
+                        num_inference_steps=config.sample.num_steps,
+                        guidance_scale=config.sample.guidance_scale,
+                        output_type="pt",
+                        height=config.resolution,
+                        width=config.resolution, 
+                        noise_level=config.sample.noise_level,
+                )
+
 
         # collate samples into dict where each entry has shape (num_batches_per_epoch * sample.batch_size, ...)
         samples = {
@@ -524,11 +542,10 @@ def main(_):
                 
                 total_loss = 0.0
 
-                indices = torch.cat([torch.randperm(num_train_timesteps-5)[:5], torch.arange(num_train_timesteps-5, num_train_timesteps)]).to(sample["latents"].device)
                 train_timesteps = [step_index  for step_index in range(num_train_timesteps)]
-                train_timesteps = [train_timesteps[xx] for xx in indices]
-                
-               
+            
+                all_log_probs = []
+                all_log_pb = []
                 for j in tqdm(
                     train_timesteps,
                     desc="Timestep",
@@ -543,7 +560,10 @@ def main(_):
                                 with torch.no_grad():
                                     with transformer.module.disable_adapter():
                                         prev_sample_ref, log_prob_ref, prev_sample_mean_ref, std_dev_t_ref = compute_log_prob(transformer, pipeline, sample, j, embeds, pooled_embeds, config)
-
+                        
+                        all_log_probs.append(log_prob)
+                        all_log_pb.append(log_pb)
+                        
                         loss_flow = log_prob - log_pb # shape (batch_size,)
                         total_loss = total_loss + loss_flow
 
@@ -553,6 +573,8 @@ def main(_):
 
                 # mean‐squared: (sum over batch & timesteps + z_loss).pow(2).mean()
                 total_loss = torch.mean(total_loss.pow(2))
+                all_log_probs = torch.stack(all_log_probs).mean().item()
+                all_log_pb = torch.stack(all_log_pb).mean().item()
                 accelerator.backward(total_loss)
                 if accelerator.sync_gradients:
                     accelerator.clip_grad_norm_(
@@ -562,18 +584,19 @@ def main(_):
                 optimizer.zero_grad()
 
                 # Checks if the accelerator has performed an optimization step behind the scenes
-                if accelerator.sync_gradients:
-                    # assert (j == train_timesteps[-1]) and (
-                    #     i + 1
-                    # ) % config.train.gradient_accumulation_steps == 0
-                    # log training-related stuff
-                    info = {k: torch.mean(torch.stack(v)) for k, v in info.items()}
-                    info = accelerator.reduce(info, reduction="mean")
-                    info.update({"epoch": epoch, "inner_epoch": inner_epoch})
-                    if accelerator.is_main_process:
-                        wandb.log(info, step=global_step)
-                    global_step += 1
-                    info = defaultdict(list)
+                # if accelerator.sync_gradients:
+                #     # assert (j == train_timesteps[-1]) and (
+                #     #     i + 1
+                #     # ) % config.train.gradient_accumulation_steps == 0
+                #     # log training-related stuff
+                info = {k: torch.mean(torch.stack(v)) for k, v in info.items()}
+                info = accelerator.reduce(info, reduction="mean")
+                info.update({"epoch": epoch, "inner_epoch": inner_epoch})
+                if accelerator.is_main_process:
+                    wandb.log(info, step=global_step)
+                    wandb.log({'all_log_probs': all_log_probs, 'all_log_pb': all_log_pb,  'flow': z_model.item(), 'loss': total_loss.item()}, step=global_step)
+                global_step += 1
+                info = defaultdict(list)
             if config.train.ema:
                 ema.step(transformer_trainable_parameters, global_step)
             # make sure we did an optimization step at the end of the inner epoch

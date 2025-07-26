@@ -264,7 +264,7 @@ def eraseflow_1gpu():
 
     # sd3.5 medium
     config.pretrained.model = "stabilityai/stable-diffusion-3-medium-diffusers"
-    config.sample.num_steps = 40
+    config.sample.num_steps = 10
     config.sample.eval_num_steps = 40
     config.sample.guidance_scale = 4.5
 
@@ -284,16 +284,18 @@ def eraseflow_1gpu():
     # Whether to use the std of all samples or the current group's.
     config.sample.global_std = True
     config.train.ema = True
-    config.train.learning_rate = 1e-5
+    config.train.learning_rate = 3e-4
+    config.train.flow_learning_rate = 1e-3
     config.save_freq = 1 # epoch
     config.eval_freq = 60
-    config.save_dir = '/data/data/matt/gfn/eraseflows/sd3_logs'
+    config.save_dir = '/data/data/matt/gfn/eraseflows/sd3_logs3'
     config.reward_fn = {
         "ocr": 1.0,
     }
     
     config.prompt_fn = "general_ocr"
     config.num_epochs = 1000
+    config.beta = 1000
 
     config.per_prompt_stat_tracking = True
     return config

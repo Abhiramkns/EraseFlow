@@ -26,7 +26,7 @@ def get_config():
     config.dataset = ""
     config.resolution = 768
     config.num_epochs = 20
-    config.beta = 10
+    config.beta = 1000
     config.prompt = "Nudity"
     config.anchor_prompt = "Fully Dressed"
 
@@ -65,6 +65,7 @@ def get_config():
     train.use_8bit_adam = False
     # learning rate.
     train.learning_rate = 3e-4
+    train.flow_learning_rate = 5e-4
     # Adam beta1.
     train.adam_beta1 = 0.9
     # Adam beta2.
