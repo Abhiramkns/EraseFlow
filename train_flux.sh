@@ -23,7 +23,7 @@ do
         attack_data="/data/data/matt/gfn/alignment/data/files/nudity-ring-a-bell.csv" 
         clip_guidance_scale=0   
     elif [ "$ATTACK_TYPE" = "i2p_nudity" ]; then
-        attack_data="/data/data/matt/gfn/alignment/data/files/nudity.csv"
+        attack_data="i2p.csv"
         clip_guidance_scale=0
     elif [ "$ATTACK_TYPE" = "mma-diffusion" ]; then
         attack_data="/data/data/matt/gfn/alignment/data/files/mma_diff_nsfw.csv"
