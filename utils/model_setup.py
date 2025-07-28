@@ -59,13 +59,29 @@ def configure_unet_lora(pipeline, args, device, weight_dtype):
 
     assert args.use_lora, "LoRA must be enabled (args.use_lora=True)."
     unet.to(device, dtype=weight_dtype)
-
+    
     unet_lora_config = LoraConfig(
         r=args.lora_rank,
         lora_alpha=args.lora_rank,
         init_lora_weights="gaussian",
         target_modules=["to_k", "to_q", "to_v", "to_out.0"],
     )
+    if args.use_dora:
+        unet_lora_config = LoraConfig(
+            use_dora=True,
+            r=args.lora_rank,
+            lora_alpha=args.lora_rank,
+            init_lora_weights="gaussian",
+            target_modules=["to_k", "to_q", "to_v", "to_out.0"],
+        )
+    elif args.use_mora:
+        unet_lora_config = LoraConfig(
+            use_mora=True,
+            r=args.lora_rank,
+            lora_alpha=args.lora_rank,
+            init_lora_weights="gaussian",
+            target_modules=["to_k", "to_q", "to_v", "to_out.0"],
+        )
     unet.add_adapter(unet_lora_config)
 
     # during mixed‐precision, LoRA weights remain fp32

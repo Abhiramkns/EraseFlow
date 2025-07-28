@@ -42,6 +42,16 @@ def get_args():
         help="Whether to attach LoRA to UNet."
     )
     parser.add_argument(
+        "--use_dora",
+        action="store_true",
+        help="Whether to attach LoRA to UNet."
+    )
+    parser.add_argument(
+        "--use_mora",
+        action="store_true",
+        help="Whether to attach LoRA to UNet."
+    )
+    parser.add_argument(
         "--lora_rank",
         type=int,
         default=4,
@@ -153,6 +163,29 @@ def get_args():
         help="Enable explicit classifier‐free guidance in the UNet forward pass."
     )
 
+    parser.add_argument(
+        "--multiconcept_list",
+        type=str,
+    )
+    parser.add_argument(
+        "--preserve_weight",
+        type=float
+    )
+    parser.add_argument(
+        "--bz",
+        type=int,
+        default=1
+    )
+    parser.add_argument(
+        "--fnconcepts",
+        type=int,
+        default=1
+    )
+    parser.add_argument(
+        "--rnconcepts",
+        type=int,
+        default=5
+    )
     # Checkpointing / output
     parser.add_argument(
         "--save_dir",
@@ -166,5 +199,11 @@ def get_args():
         default=1,
         help="Save a LoRA checkpoint every N epochs."
     )
+    parser.add_argument(
+        "--prior_path",
+        type=str,
+        default=None
+    )
+
 
     return parser.parse_args()
