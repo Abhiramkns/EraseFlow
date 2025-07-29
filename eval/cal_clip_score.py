@@ -48,9 +48,9 @@ def main():
     files = list(Path(input_path).rglob("**/log_*.json"))
     model_to_log = defaultdict(list)
     for f in files:
-        model = str(f).split('/')[-2]
+        model = str(f).split('/')[-4]
         model_to_log[model].append(str(f))
-
+    print('models: ', list(model_to_log.keys()))
     tokenizer = AutoTokenizer.from_pretrained("openai/clip-vit-large-patch14")
     processor = AutoProcessor.from_pretrained("openai/clip-vit-large-patch14")
     text_model = CLIPTextModelWithProjection.from_pretrained(
