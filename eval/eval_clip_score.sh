@@ -81,5 +81,5 @@ python cal_clip_score.py \
     --input_path './clip_images' \
 
 python cal_fid.py \
-    --input_path './clip_images' \
+    --input_path './clip_images/clip_score' \
     --real_folder './coco10k_images' \
