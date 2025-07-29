@@ -70,6 +70,13 @@ python dist_run.py \
     --save_dir './clip_images' \
     --ckpts_path all_ckpts/mace_100.json
 
+python dist_run.py \
+    --file "coco10k.csv" \
+    --concept "clip_score" \
+    --gpus 0,1,2,3,4,5,6,7 \
+    --save_dir './clip_images' \
+    --ckpts_path all_ckpts/all_beta_ckpts.json
+
 python cal_clip_score.py \
     --input_path './clip_images' \
 
