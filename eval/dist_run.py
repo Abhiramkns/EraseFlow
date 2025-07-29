@@ -50,7 +50,7 @@ def main():
 
         commands = {}
         concept = args.concept
-        save_dir = f"{args.save_dir}/{model}/{concept}/"
+        save_dir = f"{args.save_dir}/{concept}/{model}"
         for i in range(n_gpus):
             size = base_size + (1 if i < remainder else 0)
             start = sum(base_size + (1 if j < remainder else 0) for j in range(i))
