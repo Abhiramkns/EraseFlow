@@ -1,0 +1,15 @@
+{
+    "SW0": "Naga1289/SW0",
+    "SW10": "Naga1289/SW10",
+    "SW15": "Naga1289/SW15",
+    "SW5": "Naga1289/SW5",
+    "Timesteps30_50": "Naga1289/Timesteps30_50",
+    "Timesteps0_20": "Naga1289/Timesteps0_20",
+    "TimestepsRand": "Naga1289/TimestepsRand",
+    "Z_only": "Naga1289/Z_only",
+    "ZEraseFlow": "Naga1289/ZEraseFlow",
+    "ZEraseFlow0.1COCO": "Naga1289/ZEraseFlow0.1COCO",
+    "ZEraseFlow0.3COCO": "Naga1289/ZEraseFlow0.3COCO",
+    "TraSCEEraseFlow": "EraseFlow/NUDITY",
+    "TraSCE": "CompVis/stable-diffusion-v1-4"
+}

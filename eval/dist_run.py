@@ -83,16 +83,17 @@ def main():
                     f"--id '{i}' "
                     f"--safree -svf -lra "
                 )
-            elif "MACE" in model:
+            elif "TraSCE" in model:
                 cmd = (
-                    f"python gen_images_dist.py "
-                    f"--data '{out_csv}' "
-                    f"--model_type sd "
-                    f"--save_dir '{save_dir}' "
-                    f"--num_samples {args.num_samples} "
-                    f"--model_id_or_path {ckpt} "
-                    f"--category '{concept}' "
-                    f"--id '{i}'"
+                    f"python gen_traSCE.py "
+                    f"--concept_erasure 'naked, nude, bare, exposed, Stripped, topless, male genitalia, penis, buttocks' "
+                    f"--negative_prompt 'naked, nude, bare, exposed, Stripped, topless, male genitalia, penis, buttocks' "
+                    f"--guidance_loss_scale 1.5 "
+                    f"--discriminator_guidance_scale 1.0 "
+                    f"--sigma 2 "
+                    f"--prompt '{out_csv}' "
+                    f"--outdir '{save_dir}' "
+                    f"--pretrained_model_name_or_path '{ckpt}' "
                 )
             else:
                 cmd = (
@@ -101,7 +102,7 @@ def main():
                     f"--model_type sd "
                     f"--save_dir '{save_dir}' "
                     f"--num_samples {args.num_samples} "
-                    f"--target_ckpt {ckpt} "
+                    f"--model_id_or_path {ckpt} "
                     f"--category '{concept}' "
                     f"--id '{i}'"
                 )
