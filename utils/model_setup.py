@@ -104,9 +104,9 @@ def setup_optimizer_and_scaler(unet, args, device):
     else:
         optimizer_cls = torch.optim.AdamW
 
-    # z_model is a single scalar parameter to learn the flow constant
+    # z_model is a single scalar parameter to learn the flow constant. For reproducibility purposes, setting the initial value to -2.5.
     z_model = torch.nn.Parameter(
-        torch.tensor(-0.1953, device=device, dtype=torch.float32, requires_grad=True)
+        torch.tensor(-2.5, device=device, dtype=torch.float32, requires_grad=True)
     )
 
     # collect LoRA layers
