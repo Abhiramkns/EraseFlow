@@ -22,3 +22,4 @@ torchdiffeq
 opencv-python
 lpips
 pytorch_fid
+onnx_runtime
