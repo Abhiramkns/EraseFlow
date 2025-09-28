@@ -1,5 +1,5 @@
 # train_step.py
-
+import math
 import torch
 from utils.diffusers_patch.ddim_with_logprob import ddim_step_with_logprob
 
@@ -63,8 +63,8 @@ def train_eraseflow_step(sample, unet, pipeline, optimizer, scaler, z_model, arg
         # free up intermediate tensors
         torch.cuda.empty_cache()
 
-    # compute z‐loss: encourages z_model ≈ beta
-    z_target = args.beta
+    # compute z‐loss: encourages z_model ≈ log(beta). Here z_model models the log(Z).
+    z_target = math.log(args.beta)
     z_loss = z_model - z_target
     total_loss = total_loss + z_loss
 
