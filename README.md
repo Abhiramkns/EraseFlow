@@ -6,7 +6,7 @@
 
 <div align="center">
 
-###  [Arxiv Preprint]() | [HF Model](https://huggingface.co/EraseFlow) <br>
+###  [Arxiv Preprint]() | [HF Model](https://huggingface.co/EraseFlow) | [Project Page](https://eraseflow.github.io/) <br>
 EraseFlow, our proposed non-adversarial concept‐erasure algorithm, improves diffusion model safety by using GFlowNets to remove unwanted concepts while preserving high image‐generation quality.
 
 </div>
