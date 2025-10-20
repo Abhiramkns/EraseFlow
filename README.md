@@ -1,6 +1,6 @@
 <div align="center">
       
-# EraseFlow: Learning Concept Erasure Policies via GFlowNet-Driven Alignment
+# [NeurIPS 2025 Spotlight] EraseFlow: Learning Concept Erasure Policies via GFlowNet-Driven Alignment
 
 <div align="left">
 
