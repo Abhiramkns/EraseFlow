@@ -10,7 +10,7 @@ from eval_utils.models.flow.pipeline_modified_rf import ModifiedRectifiedFlowPip
 
 from diffusers import StableDiffusionXLPipeline
 
-def load_model(model_type="sdxl", target_ckpt=None, device="cuda", model_id_or_path=None, return_base_model=False, attack_type="i2p_nudity", target_ckpt_2=None, ddim=False):
+def load_model(model_type="sdxl", target_ckpt=None, device="cuda", model_id_or_path=None, target_ckpt_2=None, ddim=False):
     base_model_id = None
     print('model_type: ', model_type)
     if model_type == "sd":
@@ -53,16 +53,6 @@ def load_model(model_type="sdxl", target_ckpt=None, device="cuda", model_id_or_p
     else:
         model = ModifiedRectifiedFlowPipeline.from_pretrained(model_id, scheduler=scheduler)
 
-    base_model = None
-    if return_base_model:
-        if "mace" in model_id:
-            if model_type == "sd":
-                base_model = ModifiedStableDiffusionPipeline.from_pretrained(base_model_id, scheduler=scheduler)
-            else:
-                base_model = ModifiedRectifiedFlowPipeline.from_pretrained(base_model_id, scheduler=scheduler)
-        else:
-            base_model = copy.deepcopy(model)
-    
     if target_ckpt is not None:
         if "lora" in target_ckpt and model_type == "sd" :
             print('target ckpt: ', target_ckpt)
@@ -107,17 +97,6 @@ def load_model(model_type="sdxl", target_ckpt=None, device="cuda", model_id_or_p
         model.clip_model.to(device)
         model.unet.to(device)
         model.unet.train()
-        
-        if return_base_model:
-            base_model.safety_checker = None
-            base_model.feature_extractor = None
-            base_model.requires_safety_checker
-            
-            base_model.vae.to(device)
-            base_model.text_encoder.to(device)
-            base_model.clip_model.to(device)
-            base_model.unet.to(device)
-            base_model.unet.train()
     elif model_type == "flux":
         model.safety_checker = None
         model.vae.requires_grad_(False)
@@ -137,4 +116,4 @@ def load_model(model_type="sdxl", target_ckpt=None, device="cuda", model_id_or_p
         model.transformer.eval()
     
     generator = torch.Generator(device=device)
-    return model, generator, base_model
+    return model, generator
