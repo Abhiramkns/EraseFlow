@@ -136,7 +136,7 @@ def get_args():
         help="η parameter for DDIM sampling."
     )
     parser.add_argument(
-        "--beta",
+        "--logbeta",
         type=float,
         default=2.5,
         help="Flow constant β used in z_loss (encourages z_model ≈ β)."
