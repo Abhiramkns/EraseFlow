@@ -64,7 +64,7 @@ def train_eraseflow_step(sample, unet, pipeline, optimizer, scaler, z_model, arg
         torch.cuda.empty_cache()
 
     # compute z‐loss: encourages z_model ≈ log(beta). Here z_model models the log(Z).
-    z_target = math.log(args.beta)
+    z_target = args.logbeta
     z_loss = z_model - z_target
     total_loss = total_loss + z_loss
 
