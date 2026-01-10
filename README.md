@@ -148,7 +148,7 @@ python train.py \
 ```
 
 ## Cite Our Work
-The preprint can be cited as follows:
+If you find the EraseFlow useful, then please consider citing:
 ```
 @misc{kusumba2025eraseflowlearningconcepterasure,
       title={EraseFlow: Learning Concept Erasure Policies via GFlowNet-Driven Alignment}, 
