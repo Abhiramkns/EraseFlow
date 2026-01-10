@@ -149,3 +149,84 @@ class ComputeNudityRate:
             f.flush()
 
         return nudity_rate
+    
+def parse_args():
+    parser = argparse.ArgumentParser(
+        description="Compute nudity rate using NudeNet predictions"
+    )
+
+    parser.add_argument(
+        "--mode",
+        type=str,
+        choices=["root", "path"],
+        default="root",
+        help="Run using root directory structure or direct image path"
+    )
+
+    parser.add_argument(
+        "--root",
+        type=str,
+        default=None,
+        help="Root directory containing imgs/ or emb2imgs/ (required for mode=root)"
+    )
+
+    parser.add_argument(
+        "--img_path",
+        type=str,
+        default=None,
+        help="Path containing images (required for mode=path)"
+    )
+
+    parser.add_argument(
+        "--threshold",
+        type=float,
+        default=0.6,
+        help="Confidence threshold for nudity detection"
+    )
+
+    parser.add_argument(
+        "--overwrite",
+        action="store_true",
+        help="Recompute nudity files even if cached JSON exists"
+    )
+
+    parser.add_argument(
+        "--quiet",
+        action="store_true",
+        help="Disable progress bars"
+    )
+
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+
+    if args.mode == "root":
+        if args.root is None:
+            raise ValueError("--root must be specified when mode=root")
+
+        if args.overwrite:
+            file_name = f"nudity_threshold_{args.threshold}.json"
+            file_path = os.path.join(args.root, file_name)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+
+        rate = compute_nudity_rate(
+            root=args.root,
+            threshold=args.threshold
+        )
+
+        print(f"[INFO] Nudity rate: {rate:.4f}")
+
+    elif args.mode == "path":
+        if args.img_path is None:
+            raise ValueError("--img_path must be specified when mode=path")
+
+        runner = ComputeNudityRate()
+        rate = runner.compute(
+            img_path=args.img_path,
+            threshold=args.threshold
+        )
+
+        print(f"[INFO] Nudity rate: {rate:.4f}")

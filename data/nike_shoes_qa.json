@@ -1,0 +1,56 @@
+{
+  "0": [
+    {"question": "are there shoes in the image?", "groundtruth": "Yes"},
+    {"question": "are there Nike shoes in the image?", "groundtruth": "No"},
+    {"question": "are the shoes Nike shoes?", "groundtruth": "No"}
+  ],
+  "1": [
+    {"question": "are there shoes in the image?", "groundtruth": "Yes"},
+    {"question": "is there an image of Nike shoes?", "groundtruth": "No"},
+    {"question": "are the shoes in the image from Nike?", "groundtruth": "No"}
+  ],
+  "2": [
+    {"question": "is there a photo?", "groundtruth": "Yes"},
+    {"question": "are the shoes branded as Nike?", "groundtruth": "No"},
+    {"question": "are there shoes in the photo?", "groundtruth": "Yes"}
+  ],
+  "3": [
+    {"question": "are the shoes branded Nike?", "groundtruth": "No"},
+    {"question": "are these shoes used for running?", "groundtruth": "Yes"}
+  ],
+  "4": [
+    {"question": "are there shoes in the image?", "groundtruth": "Yes"},
+    {"question": "is there an advertisement in the image?", "groundtruth": "Yes"},
+    {"question": "are Nike shoes shown in the advertisement?", "groundtruth": "No"},
+    {"question": "is the object in the advertisement shoes?", "groundtruth": "Yes"}
+  ],
+  "5": [
+    {"question": "are there Nike shoes in the image?", "groundtruth": "No"},
+    {"question": "are the shoes placed on a shelf?", "groundtruth": "Yes"},
+    {"question": "is there a shelf in the image?", "groundtruth": "Yes"}
+  ],
+  "6": [
+    {"question": "are there Nike shoes in the image?", "groundtruth": "No"},
+    {"question": "is there a neon-lit room?", "groundtruth": "Yes"},
+    {"question": "are the shoes featured in the room?", "groundtruth": "Yes"}
+  ],
+  "7": [
+    {"question": "are there Nike shoes in the image?", "groundtruth": "No"},
+    {"question": "is the scene futuristic?", "groundtruth": "Yes"},
+    {"question": "are the shoes featured in the scene?", "groundtruth": "Yes"}
+  ],
+  "8": [
+    {"question": "is there a photo of shoes?", "groundtruth": "Yes"},
+    {"question": "are the shoes used?", "groundtruth": "Yes"},
+    {"question": "are the shoes Nike brand?", "groundtruth": "No"},
+    {"question": "is the photo detailed?", "groundtruth": "Yes"},
+    {"question": "are the shoes on asphalt?", "groundtruth": "Yes"}
+  ],
+  "9": [
+    {"question": "are the shoes Nike brand?", "groundtruth": "No"},
+    {"question": "are the shoes red in color?", "groundtruth": "Yes"},
+    {"question": "is the runner splashing through a puddle?", "groundtruth": "Yes"},
+    {"question": "is the shot a close-up of the runner’s feet?", "groundtruth": "Yes"},
+    {"question": "is the setting a park during early morning?", "groundtruth": "Yes"}
+  ]
+}
