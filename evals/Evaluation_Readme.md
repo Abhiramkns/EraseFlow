@@ -1,6 +1,7 @@
 # Evaluation Guide
 
-This script generates **one image per prompt** from a CSV file using a diffusion model and saves the results to disk.
+This script generates **one image per prompt** from a CSV file using a diffusion model and saves the results to disk.  
+The evaluation data files can be found [here](../data).
 
 ---
 
