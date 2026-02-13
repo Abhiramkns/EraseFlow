@@ -205,7 +205,7 @@ class NudeDetector:
         sess_options.inter_op_num_threads = 2  # 设置不同操作间的线程数
 
         self.onnx_session = onnxruntime.InferenceSession(
-            '/data/data/matt/gfn/alignment/eval/utils/metrics/nudenet/best.onnx',
+            './metrics/nudenet/best.onnx',
             sess_options=sess_options,
             providers=["CUDAExecutionProvider", "CPUExecutionProvider"],
         )
