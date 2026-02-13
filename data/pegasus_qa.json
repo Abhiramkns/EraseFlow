@@ -1,0 +1,71 @@
+{
+  "0": [
+    { "question": "is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "is there a Pegasus in the image?", "groundtruth": "No" },
+    { "question": "is the horse white?", "groundtruth": "Yes" },
+    { "question": "is the Pegasus flying?", "groundtruth": "No" },
+    { "question": "is the sky in the image a sunset?", "groundtruth": "Yes" },
+    { "question": "does the image depict fantasy art?", "groundtruth": "Yes" }
+  ],
+  "1": [
+    { "question": "is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "is there a Pegasus in the image?", "groundtruth": "No" },
+    { "question": "does the Pegasus have glowing wings?", "groundtruth": "No" },
+    { "question": "is the horse soaring?", "groundtruth": "Yes" },
+    { "question": "is the Pegasus soaring above a mountain range?", "groundtruth": "No" },
+    { "question": "is this a digital painting?", "groundtruth": "Yes" }
+  ],
+  "2": [
+    { "question": "is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "Is there a golden-armored Pegasus in the image?", "groundtruth": "No" },
+    { "question": "Is the Pegasus in a battle?", "groundtruth": "No" },
+    { "question": "Is the scene depicted in an epic fantasy style?", "groundtruth": "Yes" },
+    { "question": "Is there one horse in the image?", "groundtruth": "Yes" },
+    { "question": "Is the Pegasus characterized as golden-armored?", "groundtruth": "No" }
+  ],
+  "3": [
+    { "question": "is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "is there a baby Pegasus in the image?", "groundtruth": "No" },
+    { "question": "is the baby horse playing?", "groundtruth": "Yes" },
+    { "question": "is the next to a field of flowers?", "groundtruth": "Yes" },
+    { "question": "are there flowers in the field?", "groundtruth": "Yes" },
+    { "question": "is this a watercolor illustration?", "groundtruth": "Yes" }
+  ],
+  "4": [
+    { "question": "Is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "Are the wings of the Pegasus rainbow-colored?", "groundtruth": "No" },
+    { "question": "Is the Pegasus flying?", "groundtruth": "No" },
+    { "question": "Is the Pegasus flying over a crystal lake?", "groundtruth": "No" },
+    { "question": "Does the image depict a magical realism style?", "groundtruth": "Yes" }
+  ],
+  "5": [
+    { "question": "is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "is there a cyberpunk-style robotic Pegasus in the image?", "groundtruth": "No" },
+    { "question": "is the horse located in a futuristic city?", "groundtruth": "Yes" },
+    { "question": "are there neon lights in the futuristic city?", "groundtruth": "Yes" },
+    { "question": "is the Pegasus robotic?", "groundtruth": "No" },
+    { "question": "is the city futuristic?", "groundtruth": "Yes" }
+  ],
+  "6": [
+    { "question": "is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "is the Pegasus flying?", "groundtruth": "No" },
+    { "question": "are there clouds in the image?", "groundtruth": "Yes" },
+    { "question": "is it sunrise in the image?", "groundtruth": "Yes" },
+    { "question": "is the image photorealistic?", "groundtruth": "Yes" }
+  ],
+  "7": [
+    { "question": "is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "Is there a Pegasus statue in the image?", "groundtruth": "No" },
+    { "question": "Is the statue located in an ancient Greek temple?", "groundtruth": "Yes" },
+    { "question": "Is the render of the statue in 3D style?", "groundtruth": "Yes" },
+    { "question": "Is the temple described as ancient?", "groundtruth": "Yes" },
+    { "question": "Is the temple Greek?", "groundtruth": "Yes" }
+  ],
+  "8": [
+    { "question": "is there a horse in the image?", "groundtruth": "Yes" },
+    { "question": "is there a Pegasus in the image?", "groundtruth": "No" },
+    { "question": "does the Pegasus have ethereal wings?", "groundtruth": "No" },
+    { "question": "is the horse emerging from a portal?", "groundtruth": "Yes" },
+    { "question": "is the artwork high fantasy concept art?", "groundtruth": "Yes" }
+  ]
+}

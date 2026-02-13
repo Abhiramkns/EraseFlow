@@ -66,7 +66,7 @@ def gecko_vqa_test(file_path, questions_file, save_path):
         img_path = d["img_path"]
         prompt = d["prompt"]
         for ele in questions[idx]:
-            gt = ele["ground_truth"]
+            gt = ele["groundtruth"]
             answer = vqa_test(client, img_path, ele['question'])
             if gt.lower() in answer.lower():
                 score.append(1)

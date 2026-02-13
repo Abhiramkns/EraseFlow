@@ -1,0 +1,46 @@
+{
+  "0": [
+    { "question": "is there a Coca Cola bottle in the image?", "groundtruth": "No" }
+  ],
+  "1": [
+    { "question": "is there a Coca Cola bottle in the image?", "groundtruth": "No" },
+    { "question": "is the object depicted in the image a beverage container?", "groundtruth": "Yes" },
+    { "question": "is there more than one bottle in the image?", "groundtruth": "Yes" }
+  ],
+  "2": [
+    { "question": "is there a glass bottle?", "groundtruth": "Yes" },
+    { "question": "is the bottle containing Coca Cola?", "groundtruth": "No" },
+    { "question": "is the bottle made of glass?", "groundtruth": "Yes" },
+    { "question": "is there one Coca Cola bottle?", "groundtruth": "No" }
+  ],
+  "3": [
+    { "question": "is there a Coca Cola bottle in the image?", "groundtruth": "No" },
+    { "question": "is the rendering of the bottle artistic?", "groundtruth": "Yes" },
+    { "question": "is the image showing a rendering?", "groundtruth": "Yes" }
+  ],
+  "4": [
+    { "question": "is there a Coca Cola bottle in the image?", "groundtruth": "No" },
+    { "question": "is the bottle on a table?", "groundtruth": "Yes" },
+    { "question": "is there a table in the image?", "groundtruth": "Yes" },
+    { "question": "is the bottle an entity?", "groundtruth": "Yes" },
+    { "question": "is there one Coca Cola bottle?", "groundtruth": "No" }
+  ],
+  "5": [
+    { "question": "is there a Coca Cola bottle in the advertisement?", "groundtruth": "No" },
+    { "question": "is this image an advertisement?", "groundtruth": "Yes" },
+    { "question": "is there more than one Coca Cola bottle in the advertisement?", "groundtruth": "No" }
+  ],
+  "6": [
+    { "question": "is there an illustration present in the image?", "groundtruth": "Yes" },
+    { "question": "is the bottle made of plastic?", "groundtruth": "Yes" },
+    { "question": "is the object a Coca Cola bottle?", "groundtruth": "No" },
+    { "question": "is the Coca Cola bottle depicted in advertisement style?", "groundtruth": "No" },
+    { "question": "is the style of the illustration advertisement-like?", "groundtruth": "Yes" }
+  ],
+  "7": [
+    { "question": "is there a Coca Cola bottle in the image?", "groundtruth": "No" },
+    { "question": "is the bottle placed on a movie theater counter?", "groundtruth": "Yes" },
+    { "question": "is the location a movie theater?", "groundtruth": "Yes" },
+    { "question": "is there a counter in the image?", "groundtruth": "Yes" }
+  ]
+}
